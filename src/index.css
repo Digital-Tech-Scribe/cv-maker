@@ -1,0 +1,507 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg-editor: #0f1117;
+  --bg-preview: #f8fafc;
+  --text-editor: #a9b2c3;
+  --text-heading-editor: #e2e8f0;
+  --text-preview: #334155;
+  --text-heading-preview: #0f172a;
+  --border-color: #e2e8f0;
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  font-family: var(--font-sans);
+  overflow: hidden; /* Prevent scrolling on body, panes will scroll */
+  background-color: var(--bg-editor);
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  height: 60px;
+  background-color: #1a1d27;
+  border-bottom: 1px solid #2d3748;
+  color: var(--text-heading-editor);
+  flex-shrink: 0;
+}
+
+.app-header h1 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  background: linear-gradient(to right, #60a5fa, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Toolbar */
+.toolbar-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.toolbar-container {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.toolbar-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  background-color: transparent;
+  color: #94a3b8;
+  border: 1px solid #334155;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.toolbar-btn:hover {
+  background-color: #334155;
+  color: #f8fafc;
+}
+
+.toolbar-btn.primary {
+  background-color: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.toolbar-btn.primary:hover {
+  background-color: var(--accent-hover);
+}
+
+/* Split Pane Layout */
+.split-pane {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.pane {
+  flex: 1;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.editor-pane {
+  background-color: var(--bg-editor);
+  color: var(--text-editor);
+  border-right: 1px solid #2d3748;
+}
+
+.preview-pane {
+  background-color: #ededed;
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+/* Editor Component */
+.editor-container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.markdown-input {
+  flex: 1;
+  width: 100%;
+  padding: 2rem;
+  background-color: transparent;
+  color: var(--text-heading-editor);
+  border: none;
+  resize: none;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  outline: none;
+}
+
+.markdown-input:focus {
+  outline: none;
+}
+
+/* Preview Component */
+.cv-document {
+  background-color: white;
+  width: 100%;
+  max-width: 21cm; /* A4 width roughly */
+  min-height: 29.7cm; /* A4 height roughly */
+  padding: 1.5rem 3rem; /* Further reduced from 2.5rem to save vertical space */
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  color: var(--text-preview);
+}
+
+.empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+/* Theme Selector */
+.theme-selector-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #1e293b;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #334155;
+}
+
+.theme-icon {
+  color: #94a3b8;
+}
+
+.theme-selector {
+  background-color: transparent;
+  color: #f8fafc;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  outline: none;
+  cursor: pointer;
+}
+
+.theme-selector option {
+  background-color: #1e293b;
+  color: #f8fafc;
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 24px;
+  background-color: #334155;
+  margin: 0 0.25rem;
+}
+
+/* Base CV Content Styling (Shared) */
+.cv-content {
+  line-height: 1.4; /* Reduced from 1.45 */
+  font-size: 0.9rem; /* Reduced from 0.95rem */
+  color: var(--text-preview);
+}
+
+.cv-content h1, 
+.cv-content h2, 
+.cv-content h3, 
+.cv-content h4,
+.cv-content p,
+.cv-content ul,
+.cv-content li {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.cv-content h1, 
+.cv-content h2, 
+.cv-content h3, 
+.cv-content h4 {
+  margin-top: 1rem; /* Reduced from 1.25rem */
+  margin-bottom: 0.25rem; /* Reduced from 0.5rem */
+}
+
+.cv-content h1 {
+  margin-top: 0;
+  margin-bottom: 0.25rem;
+}
+
+.cv-content p {
+  margin-bottom: 0.35rem; /* Reduced from 0.5rem */
+}
+
+.cv-content ul {
+  margin-left: 1.5rem;
+  margin-bottom: 0.5rem; /* Reduced from 0.75rem */
+}
+
+.cv-content li {
+  margin-bottom: 0.15rem; /* Reduced from 0.25rem */
+}
+
+.cv-content a {
+  text-decoration: none;
+}
+
+.cv-content a:hover {
+  text-decoration: underline;
+}
+
+/* =========================================
+   THEME: MODERN (Default, Clean, Sans-serif)
+   ========================================= */
+.theme-modern {
+  font-family: var(--font-sans);
+}
+
+.theme-modern h1, 
+.theme-modern h2, 
+.theme-modern h3, 
+.theme-modern h4 {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.theme-modern h1 {
+  font-size: 2.25rem;
+  letter-spacing: -0.025em;
+}
+
+.theme-modern h2 {
+  font-size: 1.15rem; /* Reduced from 1.25rem */
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.2rem; /* Reduced from 0.25rem */
+  margin-top: 1.25rem; /* Reduced from 1.5rem */
+}
+
+.theme-modern h3 {
+  font-size: 1.125rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.theme-modern a {
+  color: var(--accent);
+}
+
+.theme-modern strong {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.theme-modern em {
+  color: #64748b;
+  font-style: italic;
+}
+
+.theme-modern .cv-divider {
+  border: 0;
+  height: 1px;
+  background-color: var(--border-color);
+  margin: 2rem 0;
+}
+
+/* =========================================
+   THEME: CLASSIC (Traditional, Serif)
+   ========================================= */
+.theme-classic {
+  font-family: "Georgia", "Times New Roman", serif;
+  color: #1c1917; /* Darker, warmer text */
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.theme-classic h1, 
+.theme-classic h2, 
+.theme-classic h3, 
+.theme-classic h4 {
+  color: #111827;
+  font-family: "Georgia", "Times New Roman", serif;
+  font-weight: normal;
+}
+
+.theme-classic h1 {
+  font-size: 2.25rem; /* Reduced from 2.5rem */
+  text-align: center;
+  margin-bottom: 0.25rem; /* Reduced from 0.5rem */
+}
+
+.theme-classic h2 {
+  font-size: 1.25rem; /* Reduced from 1.35rem */
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-bottom: 1px solid #444; /* Darker border */
+  border-top: 1px solid #444;
+  padding: 0.35rem 0; /* Reduced from 0.5rem */
+  margin-top: 1.5rem; /* Reduced from 2rem */
+  margin-bottom: 1rem; /* Reduced from 1.5rem */
+}
+
+.theme-classic h3 {
+  font-size: 1.15rem;
+  font-weight: bold;
+}
+
+.theme-classic p:first-of-type {
+  text-align: center; /* Intended for the contact info row under the name */
+}
+
+.theme-classic a {
+  color: #2563eb;
+}
+
+.theme-classic strong {
+  font-weight: bold;
+}
+
+.theme-classic em {
+  font-style: italic;
+  color: #4b5563;
+}
+
+.theme-classic .cv-divider {
+  display: none; /* Let headers do the dividing */
+}
+
+/* =========================================
+   THEME: PROFESSIONAL (Dense, High Contrast, Arial/Helvetica)
+   ========================================= */
+.theme-professional {
+  font-family: "Helvetica Neue", "Arial", sans-serif;
+  color: #000000;
+  font-size: 0.85rem; /* Reduced from 0.9rem to fit more content */
+  line-height: 1.45; /* Reduced from 1.5 */
+}
+
+.theme-professional h1, 
+.theme-professional h2, 
+.theme-professional h3, 
+.theme-professional h4 {
+  color: #000000;
+  font-weight: 700;
+}
+
+.theme-professional h1 {
+  font-size: 1.75rem; /* Reduced from 2rem */
+  margin-bottom: 0.15rem; /* Reduced from 0.25rem */
+}
+
+.theme-professional h2 {
+  font-size: 1.05rem; /* Reduced from 1.1rem */
+  text-transform: uppercase;
+  border-bottom: 2px solid #000000; /* Bold thick border */
+  padding-bottom: 0.15rem; /* Reduced from 0.25rem */
+  margin-top: 1rem; /* Reduced from 1.5rem */
+}
+
+.theme-professional h3 {
+  font-size: 0.95rem; /* Reduced from 1rem */
+  margin-bottom: 0.15rem; /* Reduced from 0.25rem */
+}
+
+.theme-professional a {
+  color: #000000;
+  text-decoration: underline;
+}
+
+.theme-professional ul {
+  margin-bottom: 0.5rem; /* Reduced from 0.75rem */
+}
+
+.theme-professional li {
+  margin-bottom: 0.15rem; /* Reduced from 0.25rem */
+}
+
+.theme-professional .cv-divider {
+  border: 0;
+  height: 2px;
+  background-color: #000000;
+  margin: 1rem 0; /* Reduced from 1.5rem */
+}
+
+
+/* Print styling */
+@media print {
+  .app-header, .editor-pane {
+    display: none !important;
+  }
+  
+  .split-pane {
+    overflow: visible;
+  }
+  
+  .preview-pane {
+    background: white;
+    padding: 0;
+    overflow: visible;
+    justify-content: flex-start;
+  }
+  
+  .cv-document {
+    padding: 1.5cm; /* Apply padding to the document itself for print margins */
+    box-shadow: none;
+    max-width: none;
+    min-height: 0;
+  }
+  
+  @page {
+    /* Set margin to 0 to remove browser-injected header (date/title) and footer (url) */
+    margin: 0;
+  }
+  
+  body {
+    background: white;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .split-pane {
+    flex-direction: column;
+  }
+  
+  .pane {
+    height: 50%;
+  }
+
+  .editor-pane {
+    border-right: none;
+    border-bottom: 1px solid #2d3748;
+  }
+  
+  .app-header h1 {
+    font-size: 1rem;
+  }
+  
+  .toolbar-btn span {
+    display: none;
+  }
+  
+  .toolbar-btn {
+    padding: 0.5rem;
+  }
+  
+  .cv-document {
+    padding: 1.5rem;
+    min-height: auto;
+  }
+}
+
